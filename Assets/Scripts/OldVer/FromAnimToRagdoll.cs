@@ -42,14 +42,7 @@ public class FromAnimToRagdoll : MonoBehaviour {
 
     public string Status {  get { return status; } }
 
-           [System.Serializable]
-    public struct RagdollShit {
-        public string name;
-        public Rigidbody rbody;
-        public Collider ragdollCollider;
-        public Vector2 minMaxForceToApplyOnRagdoll;
-        public Vector3 direction;
-    }
+           
 
     // Use this for initialization
     void Start() {
@@ -203,4 +196,13 @@ public class FromAnimToRagdoll : MonoBehaviour {
             }
         }
     }
+}
+
+[System.Serializable]
+public struct RagdollShit {
+    public string name;
+    public Rigidbody rbody;
+    public Collider ragdollCollider;
+    public Vector2 minMaxForceToApplyOnRagdoll;
+    public Vector3 direction;
 }

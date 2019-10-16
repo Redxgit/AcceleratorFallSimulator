@@ -46,4 +46,5 @@ public static class ConstantsMovements {
     public static string walking = "Walking";
     public static string after_fall = "After_fall";
     public static string transition = "Transition";
+    public static string animTransitionWalk = "TransitionWalk";
 }
