@@ -18,6 +18,8 @@ public class ApplyForces : MonoBehaviour {
 
     [SerializeField] private ForceMode forceToUse;
 
+    [SerializeField] private AnimationCurve[] forceCurves;
+
     public bool Debugging;
     public bool useFixed;
 
@@ -58,9 +60,17 @@ public class ApplyForces : MonoBehaviour {
     }
 
     private void ApplyForce() {
+
+        float pct = eTime / timeToCopy;
+
+        
+
         for (int i = 0; i < bodiesToApplyForce.Length; i++) {
-            bodiesToApplyForce[i].AddForceAtPosition(posToApplyForce[i].TransformDirection(forcesDirs[i]) * forces[i], posToApplyForce[i].position, forceToUse);
-            bodiesToApplyForce[i].AddRelativeTorque(tforces[i] * tdirs[i], forceToUse);
+            float mult = 1;
+            if (forceCurves[i] != null) 
+                mult = forceCurves[i].Evaluate(pct);
+            bodiesToApplyForce[i].AddForceAtPosition(posToApplyForce[i].TransformDirection(forcesDirs[i]) * forces[i] * mult, posToApplyForce[i].position, forceToUse);
+            bodiesToApplyForce[i].AddRelativeTorque(tforces[i] * tdirs[i] * mult, forceToUse);
         }
     }
 }
