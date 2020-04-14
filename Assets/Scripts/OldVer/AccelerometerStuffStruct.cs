@@ -2,7 +2,7 @@
 
 [System.Serializable]
 public struct AccelerometerStuffStruct {
-    public int count;
+    public float timestamp;
     public float deltaTime;
     public Vector3 values;
 
@@ -12,8 +12,8 @@ public struct AccelerometerStuffStruct {
 
     public string movementType;
 
-    public AccelerometerStuffStruct(int count, float deltaTime, Vector3 values, Vector3 pos1, Vector3 pos2, Vector3 gforce, string movementType) {
-        this.count = count;
+    public AccelerometerStuffStruct(float timestamp, float deltaTime, Vector3 values, Vector3 pos1, Vector3 pos2, Vector3 gforce, string movementType) {
+        this.timestamp = timestamp;
         this.deltaTime = deltaTime;
         this.values = values;
         this.pos1 = pos1;
@@ -25,14 +25,14 @@ public struct AccelerometerStuffStruct {
 
 [System.Serializable]
 public struct DeltaPositionsStruct {
-    public int count;
+    public float timestamp;
     public float deltaTime;
     public Vector3 values;
     public Vector3 gForce;
     public string movementType;
 
-    public DeltaPositionsStruct(int count, float deltaTime, Vector3 values, Vector3 gForce, string movementType) {
-        this.count = count;
+    public DeltaPositionsStruct(float timestamp, float deltaTime, Vector3 values, Vector3 gForce, string movementType) {
+        this.timestamp = timestamp;
         this.deltaTime = deltaTime;
         this.values = values;
         this.gForce = gForce;
@@ -47,4 +47,5 @@ public static class ConstantsMovements {
     public static string after_fall = "After_fall";
     public static string transition = "Transition";
     public static string animTransitionWalk = "TransitionWalk";
+    public static string notFall = "NotFall";
 }

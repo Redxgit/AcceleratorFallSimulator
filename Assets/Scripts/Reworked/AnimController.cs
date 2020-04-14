@@ -4,171 +4,206 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class AnimController : MonoBehaviour {
+	[SerializeField] private Animator anim;
+	[SerializeField] private Rigidbody mainRBody;
+	[SerializeField] private RagdollShit[] ragdollShits;
+	[SerializeField] private float triggerMultiplier = 1.05f;
+	[SerializeField] private string notifierLayerName;
+	[SerializeField] private CollisionDetector colliderPrefab;
+	[SerializeField] private int walkAnimsCount;
+	[SerializeField] private float forceMultiplier = 0.3f;
+	[SerializeField] private int forceAnim = -1;
 
-    [SerializeField] private Animator anim;
-    [SerializeField] private Rigidbody mainRBody;
-    [SerializeField] private RagdollShit[] ragdollShits;
-    [SerializeField] private float triggerMultiplier = 1.05f;
-    [SerializeField] private string notifierLayerName;
-    [SerializeField] private CollisionDetector colliderPrefab;
-    [SerializeField] private int walkAnimsCount;
+	//public Action ActionGoingRagdoll = delegate { };
+	//public Action ActionReturnToAnimation = delegate { };
+	//public Action ActionStartWalking = delegate { };
+	public LayerMask notifierLayer;
 
-    public Action ActionGoingRagdoll = delegate { };
-    public Action ActionReturnToAnimation = delegate { };
-    public LayerMask notifierLayer;
+	private Quaternion initRot;
+	private Vector3 initPos;
+	private bool isOnRagdoll;
 
-    private Quaternion initRot;
-    private Vector3 initPos;
-    private bool isOnRagdoll;
-
-    private string status = ConstantsMovements.idle;
-    private string prevStatus;
-    private int transitionCount;
-    private bool onTransition;
-
-    public bool OnTransition { get { return onTransition; } }
-    public string Status { get { return status; } }
-
-    // Por algun motivo con el trigger enter por defecto se vuelve gili la ragdoll asiq hay que hacerlo a mano
-    private List<CollisionDetector> generatedColliders = new List<CollisionDetector>();
+	private string prevStatus;
+	private int transitionCount;
+	private bool onTransition;
 
 
-    // Start is called before the first frame update
-    void Start() {
-        CreateCollisionDetectors();
+	private AnimationClip ann;
 
-        initPos = transform.position;
-        initRot = transform.rotation;
-    }
+	public bool OnTransition {
+		get { return onTransition; }
+	}
 
-    // Update is called once per frame
-    void Update() {
-        if (Input.GetKeyDown(KeyCode.M) && !Input.GetKey(KeyCode.LeftShift)) {
-            RecieveCollision();
-        }
+	public string Status {
+		get { return GameManager.Instance.Status; }
+	}
 
-        if (Input.GetKeyDown(KeyCode.M) && Input.GetKey(KeyCode.LeftShift)) {
-            RecieveCollision();
-            Debug.Break();
-        }
+	// Por algun motivo con el trigger enter por defecto se vuelve gili la ragdoll asiq hay que hacerlo a mano
+	private List<CollisionDetector> generatedColliders = new List<CollisionDetector>();
 
-        if (Input.GetKeyDown(KeyCode.C)) {
-            ResetThings();
-        }
 
-        if (Input.GetKeyDown(KeyCode.W)) {
-            StartWalking();
-        }
+	// Start is called before the first frame update
+	void Start() {
+		CreateCollisionDetectors();
+		initPos = transform.position;
+		initRot = transform.rotation;
+		GameManager.Instance.OnActivateRagdoll += GoRagdoll;
+		GameManager.Instance.OnResetThings += ResetThings;
+		GameManager.Instance.OnStartMoving += StartWalking;
+	}
 
-        if (Input.GetKeyDown(KeyCode.S)) {
-            GoIdle();
-        }
-    }
+	// Update is called once per frame
+	void Update() {
+		/*
+		if (Input.GetKeyDown(KeyCode.M) && !Input.GetKey(KeyCode.LeftShift)) {
+		    RecieveCollision();
+		}
 
-    private void FixedUpdate() {
-        if (onTransition) {
-            --transitionCount;
-            if (transitionCount == 0) {
-                onTransition = false;
-                status = prevStatus;
-            }
-        }
-    }
+		if (Input.GetKeyDown(KeyCode.M) && Input.GetKey(KeyCode.LeftShift)) {
+		    RecieveCollision();
+		    Debug.Break();
+		}
 
-    public void RecieveCollision() {
-        if (isOnRagdoll) return;
-        foreach (CollisionDetector g in generatedColliders) {
-            g.gameObject.SetActive(false);
-        }
-        GoRagdoll();
-    }
+		if (Input.GetKeyDown(KeyCode.C)) {
+		    ResetThings();
+		}
 
-    public void GoRagdoll() {
-        if (!enabled) return;
-        if (isOnRagdoll) return;
-        isOnRagdoll = true;
-        mainRBody.useGravity = false;
-        anim.enabled = false;
-        mainRBody.velocity = Vector3.zero;
+		if (Input.GetKeyDown(KeyCode.W)) {
+		    StartWalking();
+		}
 
-        for (int i = 0; i < ragdollShits.Length; i++) {
-            ragdollShits[i].ragdollCollider.isTrigger = false;
-            ragdollShits[i].rbody.velocity = UnityEngine.Random.Range(ragdollShits[i].minMaxForceToApplyOnRagdoll.x,
-                ragdollShits[i].minMaxForceToApplyOnRagdoll.y) * ragdollShits[i].direction;
-        }
-        status = ConstantsMovements.fall;
-        ActionGoingRagdoll.Invoke();
-    }
+		if (Input.GetKeyDown(KeyCode.S)) {
+		    GoIdle();
+		}*/
+	}
 
-    public void ResetThings() {
-        isOnRagdoll = false;
-        transform.position = initPos;
-        transform.rotation = initRot;
-        anim.enabled = true;
-        onTransition = true;
-        prevStatus = ConstantsMovements.idle;
-        anim.SetInteger(ConstantsMovements.animTransitionWalk, 0);
-        anim.Play(ConstantsMovements.idle);
-        status = ConstantsMovements.transition;
+	private void FixedUpdate() {
+		if (onTransition) {
+			--transitionCount;
+			if (transitionCount == 0) {
+				onTransition = false;
+				GameManager.Instance.Status = prevStatus;
+			}
+		}
+	}
 
-        foreach (CollisionDetector g in generatedColliders) {
-            g.gameObject.SetActive(true);
-        }
+	public void RecieveCollision() {
+		GameManager.Instance.InvokeActivateRagdoll(true);
+	}
 
-        transitionCount = 2;
-        ActionReturnToAnimation.Invoke();
-    }
+	public void GoRagdoll(bool addForces) {
+		if (isOnRagdoll ) return;
+		foreach (CollisionDetector g in generatedColliders) {
+			g.gameObject.SetActive(false);
+		}
 
-    public void StartWalking() {
-        for (int i = 0; i < ragdollShits.Length; i++) {
-            ragdollShits[i].ragdollCollider.isTrigger = true;
-            ragdollShits[i].rbody.velocity = Vector3.zero;
-        }
+		if (!enabled) return;
+		if (isOnRagdoll) return;
+		isOnRagdoll = true;
+		mainRBody.useGravity = false;
+		anim.enabled = false;
+		mainRBody.velocity = Vector3.zero;
 
-        anim.enabled = true;
-        status = ConstantsMovements.transition;
-        onTransition = true;
-        prevStatus = ConstantsMovements.walking;
-        transitionCount = 2;
-        anim.SetInteger(ConstantsMovements.animTransitionWalk, UnityEngine.Random.Range(1, walkAnimsCount + 1));
-    }
+		for (int i = 0; i < ragdollShits.Length; i++) {
+			ragdollShits[i].ragdollCollider.isTrigger = false;
+			ragdollShits[i].rbody.velocity = Vector3.zero;
+		}
 
-    public void GoIdle() {
-        anim.SetTrigger(ConstantsMovements.idle);
-        anim.SetInteger(ConstantsMovements.animTransitionWalk, 0);
-    }
+		if (addForces) {
 
-    private void CreateCollisionDetectors() {
-        foreach (RagdollShit rs in ragdollShits) {
-            Collider c = rs.ragdollCollider;
-            CollisionDetector newCol = Instantiate(colliderPrefab, c.transform);
+			for (int i = 0; i < ragdollShits.Length; i++) {
+				//ragdollShits[i].rbody.velocity = ragdollShits[i].rbody.transform.TransformDirection(UnityEngine.Random.Range(ragdollShits[i].minMaxForceToApplyOnRagdoll.x,ragdollShits[i].minMaxForceToApplyOnRagdoll.y) * ragdollShits[i].direction);
+				ragdollShits[i].rbody.AddForce(
+					forceMultiplier * ragdollShits[i].rbody.transform.TransformDirection(
+						UnityEngine.Random.Range(ragdollShits[i].minMaxForceToApplyOnRagdoll.x,
+							ragdollShits[i].minMaxForceToApplyOnRagdoll.y) * ragdollShits[i].direction),
+					ForceMode.Force);
+			}
+		}
 
-            newCol.gameObject.layer = LayerMask.NameToLayer("NUTHIN");
-            if (c is CapsuleCollider) {
-                CapsuleCollider ogcol = c as CapsuleCollider;
-                CapsuleCollider col = newCol.gameObject.AddComponent<CapsuleCollider>();
-                col.radius = ogcol.radius * triggerMultiplier;
-                col.center = ogcol.center;
-                col.height = ogcol.height * triggerMultiplier;
-                col.direction = ogcol.direction;
-                col.isTrigger = true;
-                newCol.col = col;
-            } else if (c is BoxCollider) {
-                BoxCollider ogcol = c as BoxCollider;
-                BoxCollider col = newCol.gameObject.AddComponent<BoxCollider>();
-                col.center = ogcol.center;
-                col.size = ogcol.size * triggerMultiplier;
-                col.isTrigger = true;
-                newCol.col = col;
-            } else if (c is SphereCollider) {
-                SphereCollider ogcol = c as SphereCollider;
-                SphereCollider col = newCol.gameObject.AddComponent<SphereCollider>();
-                col.radius = ogcol.radius * triggerMultiplier;
-                col.isTrigger = true;
-                newCol.col = col;
-            }
-            newCol.owner2 = this;
-            generatedColliders.Add(newCol);
-        }
-    }
+		GameManager.Instance.Status = ConstantsMovements.fall;
+		//ActionGoingRagdoll.Invoke();
+	}
+
+	public void ResetThings() {
+		isOnRagdoll = false;
+		transform.position = initPos;
+		transform.rotation = initRot;
+		anim.enabled = true;
+		onTransition = true;
+		prevStatus = ConstantsMovements.idle;
+		anim.SetInteger(ConstantsMovements.animTransitionWalk, 0);
+		anim.Play(ConstantsMovements.idle);
+		GameManager.Instance.Status = ConstantsMovements.transition;
+
+		foreach (CollisionDetector g in generatedColliders) {
+			g.gameObject.SetActive(true);
+		}
+
+		transitionCount = 2;
+		//ActionReturnToAnimation.Invoke();
+	}
+
+	public void StartWalking() {
+		for (int i = 0; i < ragdollShits.Length; i++) {
+			ragdollShits[i].ragdollCollider.isTrigger = true;
+			ragdollShits[i].rbody.velocity = Vector3.zero;
+		}
+
+		anim.enabled = true;
+		GameManager.Instance.Status = ConstantsMovements.transition;
+		onTransition = true;
+		prevStatus = ConstantsMovements.walking;
+		transitionCount = 2;
+		if (forceAnim >= 0) {
+			anim.SetInteger(ConstantsMovements.animTransitionWalk, forceAnim);
+		}
+		else {
+			anim.SetInteger(ConstantsMovements.animTransitionWalk, UnityEngine.Random.Range(1, walkAnimsCount + 1));
+		}
+
+		//ActionStartWalking.Invoke();
+	}
+
+	public void GoIdle() {
+		anim.SetTrigger(ConstantsMovements.idle);
+		anim.SetInteger(ConstantsMovements.animTransitionWalk, 0);
+	}
+
+	private void CreateCollisionDetectors() {
+		foreach (RagdollShit rs in ragdollShits) {
+			Collider c = rs.ragdollCollider;
+			CollisionDetector newCol = Instantiate(colliderPrefab, c.transform);
+
+			newCol.gameObject.layer = LayerMask.NameToLayer("NUTHIN");
+			if (c is CapsuleCollider) {
+				CapsuleCollider ogcol = c as CapsuleCollider;
+				CapsuleCollider col = newCol.gameObject.AddComponent<CapsuleCollider>();
+				col.radius = ogcol.radius * triggerMultiplier;
+				col.center = ogcol.center;
+				col.height = ogcol.height * triggerMultiplier;
+				col.direction = ogcol.direction;
+				col.isTrigger = true;
+				newCol.col = col;
+			}
+			else if (c is BoxCollider) {
+				BoxCollider ogcol = c as BoxCollider;
+				BoxCollider col = newCol.gameObject.AddComponent<BoxCollider>();
+				col.center = ogcol.center;
+				col.size = ogcol.size * triggerMultiplier;
+				col.isTrigger = true;
+				newCol.col = col;
+			}
+			else if (c is SphereCollider) {
+				SphereCollider ogcol = c as SphereCollider;
+				SphereCollider col = newCol.gameObject.AddComponent<SphereCollider>();
+				col.radius = ogcol.radius * triggerMultiplier;
+				col.isTrigger = true;
+				newCol.col = col;
+			}
+
+			newCol.owner2 = this;
+			generatedColliders.Add(newCol);
+		}
+	}
 }

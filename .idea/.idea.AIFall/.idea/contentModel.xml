@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ContentModelStore">
+    <e p="C:\Users\Redx\.Rider2019.3\system\extResources" t="IncludeRecursive" />
+    <e p="C:\Users\Redx\.Rider2019.3\system\resharper-host\local\Transient\ReSharperHost\v193\SolutionCaches\_AIFall.-455633836.00" t="ExcludeRecursive" />
+    <e p="C:\Users\Redx\Desktop\CosasUAH\UnityUAH\FallSimulation\AIFall" t="IncludeRecursive">
+      <e p="AIFall.sln" t="IncludeFlat" />
+      <e p="Assembly-CSharp.csproj" t="IncludeRecursive" />
+      <e p="Assets" t="Include">
+        <e p="animation_player.cs" t="Include" />
+        <e p="AnimCurveTest.cs" t="Include" />
+        <e p="AnimFollow" t="Include">
+          <e p="Scripts" t="Include">
+            <e p="CameraScripts" t="Include">
+              <e p="CameraMovement1_AF.cs" t="Include" />
+              <e p="CameraMovement_AF.cs" t="Include" />
+              <e p="ToggleSlomo_AF.cs" t="Include" />
+            </e>
+            <e p="MasterScripts" t="Include">
+              <e p="HashIDs_AF.cs" t="Include" />
+              <e p="PlayerMovement_AF.cs" t="Include" />
+            </e>
+            <e p="RagdollScripts" t="Include">
+              <e p="AnimFollow_AF.cs" t="Include" />
+              <e p="Limb_AF.cs" t="Include" />
+              <e p="RagdollControl_AF.cs" t="Include" />
+              <e p="ReplaceJoints_AF.cs" t="Include" />
+              <e p="ResizeProfiles_AF.cs" t="Include" />
+            </e>
+            <e p="SimpleFootIKScripts_AF" t="Include">
+              <e p="IK_PositionFeet_AF.cs" t="Include" />
+              <e p="IK_Properties_AF.cs" t="Include" />
+              <e p="IK_Setup_AF.cs" t="Include" />
+              <e p="IK_ShootRays_AF.cs" t="Include" />
+              <e p="SimpleFootIK_AF.cs" t="Include" />
+            </e>
+            <e p="TestScripts" t="Include">
+              <e p="BallTest_AF.cs" t="Include" />
+              <e p="BoxHitByBullet_AF.cs" t="Include" />
+              <e p="BulletHitInfo_AF.cs" t="Include" />
+              <e p="ragdollHitByBullet_AF.cs" t="Include" />
+              <e p="ShootStuff_AF.cs" t="Include" />
+            </e>
+          </e>
+        </e>
+        <e p="ApplyForcesOnArms.cs" t="Include" />
+        <e p="ControlSlave.cs" t="Include" />
+        <e p="followShit.cs" t="Include" />
+        <e p="ikthing.cs" t="Include" />
+        <e p="LerpPath.cs" t="Include" />
+        <e p="mimicBone.cs" t="Include" />
+        <e p="NotFallHook.cs" t="Include" />
+        <e p="ObstacleRandomizer.cs" t="Include" />
+        <e p="RandomizeMovement.cs" t="Include" />
+        <e p="Scripts" t="Include">
+          <e p="OldVer" t="Include">
+            <e p="AccelerometerFromDeltaPosition.cs" t="Include" />
+            <e p="AccelerometerStuffStruct.cs" t="Include" />
+            <e p="CollisionDetector.cs" t="Include" />
+            <e p="CreateDeltaPositionsOld.cs" t="Include" />
+            <e p="ExtensionMethods.cs" t="Include" />
+            <e p="FromAnimToRagdoll.cs" t="Include" />
+            <e p="LerpHandsIK.cs" t="Include" />
+            <e p="MathUtils.cs" t="Include" />
+            <e p="PlotAccelerometer.cs" t="Include" />
+            <e p="TweenToPos.cs" t="Include" />
+            <e p="UtilThings.cs" t="Include" />
+          </e>
+          <e p="Reworked" t="Include">
+            <e p="AnimController.cs" t="Include" />
+            <e p="ApplyForces.cs" t="Include" />
+            <e p="ApplyForcesSyncope.cs" t="Include" />
+            <e p="CreateDeltaPositions.cs" t="Include" />
+            <e p="DebugDrawRays.cs" t="Include" />
+            <e p="GameManager.cs" t="Include" />
+            <e p="screenshoter.cs" t="Include" />
+          </e>
+          <e p="Tweens" t="Include">
+            <e p="EasingEquations.cs" t="Include" />
+            <e p="RedxAnimationExtensions.cs" t="Include" />
+            <e p="RedxRectTransformAnchoredPositionTweener.cs" t="Include" />
+            <e p="RedxRectTransformLocalScaleTweener.cs" t="Include" />
+            <e p="RedxTimer.cs" t="Include" />
+            <e p="RedxTransformLocalPositionTweener.cs" t="Include" />
+            <e p="RedxTransformLocalScaleTweener.cs" t="Include" />
+            <e p="RedxTweener.cs" t="Include" />
+            <e p="RedxTweenImageColor.cs" t="Include" />
+            <e p="RedxTweenSpriteColor.cs" t="Include" />
+            <e p="RedxTweenValue.cs" t="Include" />
+          </e>
+        </e>
+        <e p="UIController.cs" t="Include" />
+      </e>
+      <e p="obj" t="ExcludeRecursive" />
+      <e p="Packages" t="ExcludeRecursive" />
+      <e p="Temp\bin" t="ExcludeRecursive" />
+    </e>
+  </component>
+</project>

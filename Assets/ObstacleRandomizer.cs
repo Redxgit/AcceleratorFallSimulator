@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class ObstacleRandomizer : MonoBehaviour {
-    [SerializeField] private FromAnimToRagdoll controller;
     [SerializeField] private Transform obstacle;
 
     [SerializeField] private Transform minPos;
@@ -13,7 +12,8 @@ public class ObstacleRandomizer : MonoBehaviour {
     private Quaternion startingRot;
 
     private void Start() {
-        controller.ReturnToAnimation += RandomizePosition;
+        GameManager.Instance.OnResetThings += RandomizePosition;
+        //controller.ReturnToAnimation += RandomizePosition;
     }
 
     [ContextMenu("RandomizePos")]

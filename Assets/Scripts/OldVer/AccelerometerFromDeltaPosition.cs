@@ -12,7 +12,7 @@ public class AccelerometerFromDeltaPosition : MonoBehaviour {
 
     [SerializeField] private float offset;
 
-    [SerializeField] private string fileName;
+    
 
 
 
@@ -33,11 +33,22 @@ public class AccelerometerFromDeltaPosition : MonoBehaviour {
 
     public void WriteInfoToFile(string newPath = "") {
 
+
+        string date_time = DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss");
+        
+        string fileName = date_time + "_" + GameManager.Instance.FileName;
+
+
         if (newPath != "") {
             fileName = newPath;            
         }
+        
+        bool exists = Directory.Exists(Application.streamingAssetsPath + "/outcsvs/");
 
-        string fullpath = Application.dataPath + "/outcsvs/" + fileName + ".csv";
+        if(!exists)
+            Directory.CreateDirectory(Application.streamingAssetsPath + "/outcsvs/");
+
+        string fullpath = Application.streamingAssetsPath + "/outcsvs/" + fileName + ".csv";
 
         Debug.Log("PrintingStuff to " + fullpath);
 
@@ -51,7 +62,7 @@ public class AccelerometerFromDeltaPosition : MonoBehaviour {
         fullString.Add("count,delta,accelx,accely,accelz,pos1x,pos1y,pos1z,pos2x,pos2y,pos2z,gforcex,gforcey,gforcez,movementType");
 
         for (int i = 0; i < listTarget.Count; i++) {
-            fullString.Add(listTarget[i].count.ToString() + ',' +
+            fullString.Add(listTarget[i].timestamp.ToString() + ',' +
                 listTarget[i].deltaTime.ToString("F6") + ',' +
                 listTarget[i].values.x.ToString("F6").Replace(',', '.') + ',' +
                 listTarget[i].values.y.ToString("F6").Replace(',', '.') + ',' +
@@ -78,8 +89,8 @@ public class AccelerometerFromDeltaPosition : MonoBehaviour {
             float dt = listSource[i + 1].deltaTime - listSource[i].deltaTime;
             Vector3 dpos = listSource[i + 1].values - listSource[i].values;
             Vector3 sumgforce = (listSource[i + 1].gForce + listSource[i].gForce).normalized;
-            Vector3 accelerometerValue = (dpos / (dt)) + (sumgforce * offset);
-            AccelerometerStuffStruct newStuff = new AccelerometerStuffStruct(i, dt, accelerometerValue, listSource[i + 1].values, listSource[i].values, sumgforce, listSource[i].movementType);
+            Vector3 accelerometerValue = (dpos / (dt )) + (sumgforce * offset);
+            AccelerometerStuffStruct newStuff = new AccelerometerStuffStruct(Time.time, dt, accelerometerValue, listSource[i + 1].values, listSource[i].values, sumgforce, listSource[i].movementType);
 
             listTarget.Add(newStuff);
         }
@@ -87,13 +98,13 @@ public class AccelerometerFromDeltaPosition : MonoBehaviour {
 
     public void CreateAccelerometerListFromDeltaPos(List<DeltaPositionsStruct> listSource, int pos) {
 
-        float dt = listSource[pos + 1].deltaTime - listSource[pos].deltaTime;
+        float dt = listSource[pos + 1].timestamp - listSource[pos].timestamp;
         Vector3 dpos = listSource[pos + 1].values - listSource[pos].values;
         Vector3 sumgforce = (listSource[pos + 1].gForce + listSource[pos].gForce).normalized;
-        Vector3 accelerometerValue = (dpos / (dt)) + (sumgforce * offset);
-        AccelerometerStuffStruct newStuff = new AccelerometerStuffStruct(pos, dt, accelerometerValue, listSource[pos + 1].values, listSource[pos].values, sumgforce, listSource[pos].movementType);
+        Vector3 accelerometerValue = (dpos / (dt )) + (sumgforce * offset);
+        AccelerometerStuffStruct newStuff = new AccelerometerStuffStruct(Time.time, dt, accelerometerValue, listSource[pos + 1].values, listSource[pos].values, sumgforce, listSource[pos].movementType);
         //AccelerometerStuffStruct newStuff = new AccelerometerStuffStruct(pos, dt, accelerometerValue, dpos);
-
+        //Debug.Log("dt: " + dt + " accelerometerValue: " + accelerometerValue+ " dpos: " + dpos);
         listTarget.Add(newStuff);
 
         //File.AppendAllText(fullpath, "count,delta,x,y,z");

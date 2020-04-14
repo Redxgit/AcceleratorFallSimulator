@@ -8,7 +8,19 @@ public class UIController : MonoBehaviour {
     [SerializeField] private Text fileName;
     [SerializeField] private AccelerometerFromDeltaPosition filesaver;
     [SerializeField] private FromAnimToRagdoll anim;
+    [SerializeField] private Text animatorName;
+    [SerializeField] private animation_player aPlayer;
+    
 
+    private void Start()
+    {
+        aPlayer.AnimatorChanged += UpdateAnimatorTextInfo;
+    }
+
+    public void UpdateAnimatorTextInfo(string newName)
+    {
+        animatorName.text = newName;
+    }
 
     public void UISaveToFile() {
         filesaver.WriteInfoToFile(fileName.text);

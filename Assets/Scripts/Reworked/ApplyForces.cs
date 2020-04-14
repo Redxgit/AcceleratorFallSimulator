@@ -28,7 +28,8 @@ public class ApplyForces : MonoBehaviour {
 
     // Start is called before the first frame update
     void Start() {
-        animController.ActionGoingRagdoll += StartApplying;
+        //animController.ActionGoingRagdoll += StartApplying;
+        GameManager.Instance.OnActivateRagdoll += StartApplying;
     }
 
     // Update is called once per frame
@@ -53,9 +54,9 @@ public class ApplyForces : MonoBehaviour {
     }
 
 
-    private void StartApplying() {
+    private void StartApplying(bool applyForces) {
         if (Debugging) Debug.Break();
-        isApplying = true;
+        isApplying = applyForces;
         eTime = 0f;
     }
 
@@ -69,8 +70,8 @@ public class ApplyForces : MonoBehaviour {
             float mult = 1;
             if (forceCurves[i] != null) 
                 mult = forceCurves[i].Evaluate(pct);
-            bodiesToApplyForce[i].AddForceAtPosition(posToApplyForce[i].TransformDirection(forcesDirs[i]) * forces[i] * mult, posToApplyForce[i].position, forceToUse);
-            bodiesToApplyForce[i].AddRelativeTorque(tforces[i] * tdirs[i] * mult, forceToUse);
+            bodiesToApplyForce[i].AddForceAtPosition(posToApplyForce[i].TransformDirection(forcesDirs[i]) * (forces[i] * mult), posToApplyForce[i].position, forceToUse);
+            bodiesToApplyForce[i].AddRelativeTorque(tdirs[i] * (tforces[i] * mult), forceToUse);
         }
     }
 }
